@@ -1,6 +1,8 @@
 import os
 import json
-cwd = os.getcwd() + '/resources/'
+import cfg
+
+cwd = cfg.get_path()
 
 network = []
 with open(cwd + 'weights', 'r') as f:

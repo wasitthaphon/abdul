@@ -3,7 +3,8 @@ from random import seed
 import math
 import os
 import json
-cwd = os.getcwd() + '/resources/'
+from resources import cfg
+cwd = cfg.get_path()
 
 # Find amount bad and good word
 def find_word(message):

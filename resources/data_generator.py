@@ -1,8 +1,8 @@
 import os
-
+import cfg
 wordSet = []
 sentensesData = []
-cwd = os.getcwd() + '/resources/'
+cwd = cfg.get_path()
 
 with open(cwd + 'words', 'r') as words:
     for word in words:

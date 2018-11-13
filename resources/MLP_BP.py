@@ -3,7 +3,8 @@ from random import seed
 import math
 import matplotlib.pyplot as plt
 import os
-cwd = os.getcwd() + '/resources/'
+import cfg
+cwd = cfg.get_path()
 import json
 
 # Create 2 network layers input -> hidden -> output
@@ -142,9 +143,9 @@ with open(cwd + 'sentensesData', 'r') as dataset_file:
 
 n_inputs = len(dataset[0]) - 1
 n_outputs = len(set([row[-1] for row in dataset]))
-network = initialize_network(n_inputs, 9, 9, n_outputs)
+network = initialize_network(n_inputs, 11, 11, n_outputs)
 learning_rate = 0.05
-epoch = 3000
+epoch = 10000
 train_network(network, dataset, learning_rate, epoch, n_outputs)
 with open(cwd + 'weights', 'w') as outfile:
     json.dump(network, outfile)

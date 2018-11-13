@@ -1,11 +1,12 @@
 import numpy as np 
 import os
+import cfg
 
 f = open('words', 'w')
 
 words = []
 chk = []
-cwd = os.getcwd() + '/resources/'
+cwd = cfg.get_path()
 first = True
 with open(cwd + 'normal-word.txt', 'r') as norWord:
     for item in norWord:

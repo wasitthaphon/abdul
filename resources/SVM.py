@@ -1,8 +1,10 @@
 from sklearn import svm
+import cfg
 
+cwd = cfg.get_path()
 dataset = []
 target = []
-with open('sentensesData', 'r') as dataset_file:
+with open(cwd + 'sentensesData', 'r') as dataset_file:
     for data in dataset_file:
         tmp = []
         if '\n' in data:
