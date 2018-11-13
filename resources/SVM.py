@@ -16,7 +16,7 @@ with open(cwd + 'sentensesData', 'r') as dataset_file:
         dataset.append(tmp[:len(tmp)-2])
         target.append(tmp[len(tmp)-1])
 
-clf = svm.SVC(gamma='scale', max_iter=1500)
+clf = svm.SVC(gamma='scale', max_iter=10000)
 clf.fit(dataset, target)
 print(clf.score(dataset, target) * 100)
 

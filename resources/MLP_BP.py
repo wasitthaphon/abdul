@@ -8,7 +8,7 @@ cwd = cfg.get_path()
 import json
 
 # Create 2 network layers input -> hidden -> output
-def initialize_network(n_input, n_hidden_1, n_hidden_2, n_outputs):
+def initialize_network(n_input, n_hidden_1, n_hidden_2,  n_outputs):
     network = list()
     hidden_layer_1 = [{'weights':[random() for i in range(n_input + 1)]} for i in range(n_hidden_1)]
     network.append(hidden_layer_1)
@@ -143,7 +143,7 @@ with open(cwd + 'sentensesData', 'r') as dataset_file:
 
 n_inputs = len(dataset[0]) - 1
 n_outputs = len(set([row[-1] for row in dataset]))
-network = initialize_network(n_inputs, 11, 11, n_outputs)
+network = initialize_network(n_inputs, 15, 15, n_outputs)
 learning_rate = 0.05
 epoch = 10000
 train_network(network, dataset, learning_rate, epoch, n_outputs)
