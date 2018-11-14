@@ -145,7 +145,7 @@ dataset = dataset[:train_amount]
 
 n_inputs = len(dataset[0]) - 1
 n_outputs = len(set([row[-1] for row in dataset]))
-network = initialize_network(n_inputs, 7, 7, n_outputs)
+network = initialize_network(n_inputs, 11, 11, n_outputs)
 learning_rate = 0.05
 epoch = 5000
 train_network(network, dataset, learning_rate, epoch, n_outputs)

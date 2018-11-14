@@ -5,7 +5,9 @@ from sklearn import datasets
 from sklearn import preprocessing
 import math
 import json
+
 from resources import cfg
+# import cfg
 import numpy as np 
 import matplotlib.pyplot as plt
 
@@ -26,6 +28,16 @@ with open(cwd + 'sentensesData', 'r') as dataset_file:
         tmp[len(tmp)-1] = int(tmp[len(tmp)-1])
         train_data.append(tmp[:len(tmp)-1])
         train_target.append(tmp[-1])
+tmp_data = []
+tmp_data = train_data.copy()
+
+def normalize_data(data):
+    new_tmp_data =tmp_data
+    new_tmp_data.append(data)
+    new_tmp_data = preprocessing.scale(new_tmp_data)
+    return new_tmp_data[-1]
+
+
 train_data = preprocessing.scale(train_data)
 # Test data
 train_amount = 75

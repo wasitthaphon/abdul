@@ -40,9 +40,7 @@ def find_word(message):
                 points += float(word[1])
                 for k in range(j, j + len(word[0])):
                     idx.append(k)
-    amount[0] = float((amount[0] * 100.0) / len(message))
-    amount[1] = float((amount[1] * 100.0) / len(message))
-    result.append([len(message)/max_sentense, amount[0], amount[1], points, wordtmp])
+    result.append([len(message), amount[0], amount[1], points, wordtmp])
     return result
 
 # Neural Activation
@@ -71,7 +69,6 @@ def forward_propagate(network, row):
 # Predict
 def predict(network, row):
     outputs = forward_propagate(network, row)
-    print(outputs)
     return outputs.index(max(outputs))
 
 # Load Weights
