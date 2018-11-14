@@ -1,5 +1,8 @@
 from random import random
 from random import seed
+from sklearn.metrics import mean_squared_error
+from sklearn import preprocessing
+import math
 import math
 import matplotlib.pyplot as plt
 import os
@@ -17,12 +20,6 @@ def initialize_network(n_input, n_hidden_1, n_hidden_2,  n_outputs):
     output_layer = [{'weights':[random() for i in range(n_hidden_2 + 1)]} for i in range(n_outputs)]
     network.append(output_layer)
     return network
-
-# Test the network
-# seed(1)
-# network = initialize_network(2, 1, 2)
-# for layer in network:
-#     print(layer)
 
 # Neural Activation
 def activate(weights, inputs):
@@ -46,10 +43,6 @@ def forward_propagate(network, row):
             new_inputs.append(neuron['output'])
         inputs = new_inputs
     return inputs
-
-# row = [1, 0, None]
-# output = forward_propagate(network, row)
-# print(output)
 
 # 3 Back Propagate Error
 # 3.1 Transfer Derivative
@@ -75,15 +68,6 @@ def backward_propagate_error(network, expected):
             neuron = layer[j]
             neuron['delta'] = errors[j] * transfer_derivative(neuron['output'])
 
-
-# test backpropagation of error
-# network = [[{'output': 0.7105668883115941, 'weights': [0.13436424411240122, 0.8474337369372327, 0.763774618976614]}],
-# 		[{'output': 0.6213859615555266, 'weights': [0.2550690257394217, 0.49543508709194095]}, {'output': 0.6573693455986976, 'weights': [0.4494910647887381, 0.651592972722763]}]]
-# expected = [0, 1]
-# backward_propagate_error(network, expected)
-# for layer in network:
-# 	print(layer)
-
 # 4 Train Network
 # 4.1 Update Weights
 def update_weights(network, row, l_rate):
@@ -102,6 +86,7 @@ E = []
 def train_network(network, train, l_rate, n_epoch, n_outputs):
     for epoch in range(n_epoch):
         sum_error = 0
+        mse = 0
         for row in train:
             outputs = forward_propagate(network, row)
             expected = [0 for i in range(n_outputs)]
@@ -109,11 +94,11 @@ def train_network(network, train, l_rate, n_epoch, n_outputs):
             sum_error += sum([(expected[i] - outputs[i])**2 for i in range(len(expected))])
             backward_propagate_error(network, expected)
             update_weights(network, row, l_rate)
-        sum_error /= float(len(expected))
-        if epoch % 100 == 0 and epoch != 0:
-            print('>epoch=%d, lrate=%.3f, error=%.3f' % (epoch, l_rate, sum_error))
-        E.append(sum_error)
 
+        mse = sum_error / len(train)
+        if epoch % 100 == 0 and epoch != 0:
+            print('>epoch=%d, lrate=%.3f, error=%.3f' % (epoch, l_rate, mse))
+        E.append(mse)
 
 # Predict
 def predict(network, row):
@@ -129,7 +114,7 @@ def accuracy(actual, predicted):
     return count / float(len(actual)) * 100
 
 # Test training backprop algorithm
-dataset = []
+datasets = []
 with open(cwd + 'sentensesData', 'r') as dataset_file:
     for data in dataset_file:
         tmp = []
@@ -139,31 +124,46 @@ with open(cwd + 'sentensesData', 'r') as dataset_file:
         for i in range(len(tmp)-1):
             tmp[i] = float(tmp[i])
         tmp[len(tmp)-1] = int(tmp[len(tmp)-1])
-        dataset.append(tmp[0:])
+        datasets.append(tmp[0:])
+
+dataset = []
+for item in datasets:
+    dataset.append(item[:-1])
+
+dataset = preprocessing.scale(dataset)
+i = 0
+dataset = dataset.tolist()
+for i in range(len(datasets)):
+    tmp = datasets[i]
+    dataset[i].append(tmp[-1])
 
 n_inputs = len(dataset[0]) - 1
 n_outputs = len(set([row[-1] for row in dataset]))
-network = initialize_network(n_inputs, 15, 15, n_outputs)
+network = initialize_network(n_inputs, 11, 11, n_outputs)
 learning_rate = 0.05
-epoch = 10000
+epoch = 5000
 train_network(network, dataset, learning_rate, epoch, n_outputs)
-with open(cwd + 'weights', 'w') as outfile:
-    json.dump(network, outfile)
-
-# for layer in network:
-# 	print(layer)
+# with open(cwd + 'weights', 'w') as outfile:
+#     json.dump(network, outfile)
 
 expected = []
 actual = []
+
 for row in dataset:
     prediction = predict(network, row)
-    print('Expected=%d, Got=%d' % (row[-1], prediction))
+    # print('Expected=%d, Got=%d' % (row[-1], prediction))
     actual.append(row[-1])
     expected.append(prediction)
 
 print(accuracy(actual, expected))
+tmp = []
+tmp.append([{'MLP-BP':[{'expected':expected}, {'actual':actual}, {'accuracy':accuracy(actual, expected)}]}])
+print(tmp)
 
-plt.plot([i for i in range(epoch)], E, 'r')
+with open(cwd + 'info', 'w') as info:
+    json.dump(tmp, info)
+
+plt.plot(range(epoch), E, 'r')
 plt.xlabel('Iteration')
 plt.ylabel('Error')
-plt.show()
+plt.savefig(cfg.get_image_path() + 'MLP-BP.jpg')

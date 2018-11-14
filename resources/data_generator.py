@@ -1,5 +1,7 @@
 import os
 import cfg
+import statistics
+
 wordSet = []
 sentensesData = []
 cwd = cfg.get_path()
@@ -24,6 +26,7 @@ max_sentense = 0
 for sentense in sentensesData:
     if len(sentense) > max_sentense:
         max_sentense = len(sentense)
+
 for sentense in sentensesData:
     points = 0
     amount = [0, 0]
@@ -34,18 +37,19 @@ for sentense in sentensesData:
         for j in range(len(sentense) - len(word[0])):
             string = sentense[j:j+len(word[0])]
             if word[0].__eq__(string) and not j in idx:
+
+                # Bad word
                 if float(word[1]) < 0:
                     amount[0] += len(word[0])
                     wordtmp[0].append(word[0])
+                # Good word
                 elif float(word[1]) > 0:
                     amount[1] += len(word[0])
                     wordtmp[1].append(word[0])
                 points += float(word[1])
                 for k in range(j, j + len(word[0]) + 1):
                     idx.append(k)
-    amount[0] = float((amount[0] * 100.0) / len(sentense))
-    amount[1] = float((amount[1] * 100.0) / len(sentense))
-    newSentensesData.append([sentense, len(sentense)/max_sentense, amount[0], amount[1], points, wordtmp])
+    newSentensesData.append([sentense, len(sentense), amount[0], amount[1], points, wordtmp])
 
 answer = []
 with open(cwd + 'answer', 'r') as ans_file:

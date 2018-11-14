@@ -13,11 +13,21 @@
     
 # print(dataset)
 
-ans = []
-with open('answer', 'r') as ans_file:
-    for data in ans_file:
-        tmp = 0
-        if '\n' in data:
-            tmp = data[:-1]
-        ans.append(int(tmp))
-print(ans)
+# ans = []
+# with open('answer', 'r') as ans_file:
+#     for data in ans_file:
+#         tmp = 0
+#         if '\n' in data:
+#             tmp = data[:-1]
+#         ans.append(int(tmp))
+# print(ans)
+
+import json
+import cfg
+
+tmp = []
+with open(cfg.get_path() + 'info', 'r') as fl:
+    tmp = json.load(fl)
+
+print(tmp[0][0]['MLP-BP'][0])
+print(tmp[1])

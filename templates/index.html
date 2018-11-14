@@ -51,16 +51,19 @@
 					data: [
 						0,
 						0,
+						0
 					],
 					backgroundColor: [
 						window.chartColors.red,
-						window.chartColors.green
+						window.chartColors.green,
+						window.chartColors.grey
 					],
 					label: 'Dataset 1'
 				}],
 				labels: [
 					'คำรุนแรง',
-					'คำสร้างสรรค์'
+					'คำสร้างสรรค์',
+					'ข้อความ'
 				]
 			},
 			options: {
@@ -85,6 +88,7 @@
 					console.log(data);
 					config.data.datasets[0].data[0] = data.data[1];
 					config.data.datasets[0].data[1] = data.data[2];
+					config.data.datasets[0].data[2] = 100 - (data.data[1] + data.data[2]);
 					document.getElementById('result').innerHTML = data.result
 					window.myPie.update();
 				},
