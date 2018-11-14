@@ -131,33 +131,49 @@ for item in datasets:
     dataset.append(item[:-1])
 
 dataset = preprocessing.scale(dataset)
+train_amount = 75
+
 i = 0
 dataset = dataset.tolist()
 for i in range(len(datasets)):
     tmp = datasets[i]
     dataset[i].append(tmp[-1])
 
+test_data = []
+test_data = dataset[train_amount:].copy()
+dataset = dataset[:train_amount]
+
 n_inputs = len(dataset[0]) - 1
 n_outputs = len(set([row[-1] for row in dataset]))
-network = initialize_network(n_inputs, 11, 11, n_outputs)
+network = initialize_network(n_inputs, 7, 7, n_outputs)
 learning_rate = 0.05
 epoch = 5000
 train_network(network, dataset, learning_rate, epoch, n_outputs)
-# with open(cwd + 'weights', 'w') as outfile:
-#     json.dump(network, outfile)
+with open(cwd + 'weights', 'w') as outfile:
+    json.dump(network, outfile)
 
-expected = []
-actual = []
-
+train_expected = []
+train_actual = []
 for row in dataset:
     prediction = predict(network, row)
     # print('Expected=%d, Got=%d' % (row[-1], prediction))
-    actual.append(row[-1])
-    expected.append(prediction)
+    train_actual.append(row[-1])
+    train_expected.append(prediction)
 
-print(accuracy(actual, expected))
+print('Train acc: ',accuracy(train_actual, train_expected))
+
+test_expected = []
+test_actual = []
+for row in test_data:
+    prediction = predict(network, row)
+    # print('Expected=%d, Got=%d' % (row[-1], prediction))
+    test_actual.append(row[-1])
+    test_expected.append(prediction)
+print('Test acc:', accuracy(test_actual, test_expected))
+
+
 tmp = []
-tmp.append([{'MLP-BP':[{'expected':expected}, {'actual':actual}, {'accuracy':accuracy(actual, expected)}]}])
+tmp.append([{'MLP-BP':[{'train_accuracy':accuracy(train_actual, train_expected)},{'test_accuracy':accuracy(test_actual, test_expected)}]}])
 print(tmp)
 
 with open(cwd + 'info', 'w') as info:

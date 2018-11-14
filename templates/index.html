@@ -24,6 +24,21 @@
 			    <button type="submit" class="btn btn-primary mb-2 col-sm-2">Send</button>
 	 		 </div>
 		</div>
+		<div class="row form-position text-center">
+			<div class="col text-center bounding-box">
+				<h3 class="text-center">ผลลัพธ์</h3>
+			</div>
+		</div>
+		<div class="row ">
+			<div class="col bounding-box text-center">
+				<h4>MLP-BP</h4>
+				<h4 id="result_mlp"></h4>
+			</div>
+			<div class="col bounding-box text-center">
+				<h4>SVM</h4>
+				<h4 id="result_svm"></h4>
+			</div>
+		</div>
 		<div class="row form-position">
 			<div class="col bounding-box text-center">
 				<h3>แผนภูมิวงกลมแสดงร้อยละของคำเชิงต่าง ๆ</h3>
@@ -31,9 +46,15 @@
 					<canvas id="chart-area" style="width: 400px; height: 400px; margin: auto;"></canvas>
 				</div>
 			</div>
-			<div class="col bounding-box text-center">
-				<h3>ผลลัพธ์</h3>
-				<h4 id="result"></h4>
+			<div class="col">
+				<div class="row">
+					<h3>คำรุนแรง</h3><br>
+					<h4 id="negative" style="color:red;"></h4>
+				</div>
+				<div class="row form-position">
+					<h3>คำสร้างสรรค์</h3><br>
+					<h4 id="positive" style="color:green;"></h4>
+				</div>
 			</div>
 		</div>
 		
@@ -89,7 +110,26 @@
 					config.data.datasets[0].data[0] = data.data[1];
 					config.data.datasets[0].data[1] = data.data[2];
 					config.data.datasets[0].data[2] = 100 - (data.data[1] + data.data[2]);
-					document.getElementById('result').innerHTML = data.result
+					document.getElementById('result_mlp').innerHTML = data.result_mlp
+					document.getElementById('result_svm').innerHTML = data.result_svm
+
+					if (data.result_mlp == 'เชิงลบ'){
+						document.getElementById('result_mlp').style.color = 'red'
+					}else if(data.result_mlp == 'เชิงบวก'){
+						document.getElementById('result_mlp').style.color = 'green'
+					}else{
+						document.getElementById('result_mlp').style.color = 'grey'
+					}
+					if (data.result_svm == 'เชิงลบ'){
+						document.getElementById('result_svm').style.color = 'red'
+					}else if(data.result_svm == 'เชิงบวก'){
+						document.getElementById('result_svm').style.color = 'green'
+					}else{
+						document.getElementById('result_svm').style.color = 'grey'
+					}
+					
+					document.getElementById('negative').innerHTML = data.data[4][0]
+					document.getElementById('positive').innerHTML = data.data[4][1]
 					window.myPie.update();
 				},
 				error: function(error){

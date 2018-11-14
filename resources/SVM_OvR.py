@@ -28,9 +28,12 @@ with open(cwd + 'sentensesData', 'r') as dataset_file:
         train_target.append(tmp[-1])
 train_data = preprocessing.scale(train_data)
 # Test data
-test_data = train_data.copy()
-test_target = train_target.copy()
- 
+train_amount = 75
+test_data = train_data[train_amount:].copy()
+test_target = train_target[train_amount:].copy()
+train_data = train_data[:train_amount]
+train_target = train_target[:train_amount]
+
 # One versus Rest
 # Class 0 vs Class(1, 2)
 iteration = 5000
@@ -56,6 +59,17 @@ for data in test_data:
         else:
             predicted.append(2)
 
+train_predicted = []
+for data in train_data:
+    if svmClassNegative.predict([data]) == 1:
+        train_predicted.append(0)
+    else:
+        if svmClassPositive.predict([data]) == 1:
+            train_predicted.append(1)
+        else:
+            train_predicted.append(2)
+
+    
 # Accuracy
 count = 0
 for i in range(len(predicted)):
@@ -64,10 +78,15 @@ for i in range(len(predicted)):
         count += 1
 
 accuracy = count / float(len(predicted)) * 100
-print(accuracy)
 
+count = 0
+for i in range(len(train_predicted)):
+    if train_predicted[i] == train_target[i]:
+        count += 1
 
-
+train_accuracy = count / float(len(train_predicted)) * 100
+print('Train ACC: ', train_accuracy)
+print('Test ACC: ', accuracy)
 
 # Plot
 def make_meshgrid(x, y, h=.02):
@@ -87,8 +106,8 @@ X = []
 X0 = []
 X1 = []
 for data in train_data:
-    X.append([data[1] - data[2], data[3]])
-    X0.append(data[1] - data[2])
+    X.append([data[0], data[3]])
+    X0.append(data[0])
     X1.append(data[3])
 y = (targatForClassNegative.copy(), targetForClassPositve.copy())
 
@@ -100,16 +119,16 @@ models = (svmClassNegative.fit(X, targatForClassNegative),
 titles = ('SVC Negative V Rest',
             'SVC Positive V Rest')
 fig, sub = plt.subplots(1, 2)
-plt.subplots_adjust(wspace=0.7, hspace=0.7)
+plt.subplots_adjust(wspace=0.4, hspace=0.4)
 
 for clf, title, ax, y_each in zip(models, titles, sub.flatten(), y):
     plot_contours(ax, clf, xx, yy,
-                cmap=plt.cm.register_cmap(name='spectral', cmap='nipy_spectral'), alpha=0.8)
-    ax.scatter(X0, X1, c=y_each, cmap=plt.cm.register_cmap(name='spectral', cmap='nipy_spectral'), s=20, edgecolors='k')
+                cmap=plt.get_cmap(name='Set3'), alpha=0.8)
+    ax.scatter(X0, X1, c=y_each, cmap=plt.get_cmap(name='Set3'), s=20, edgecolors='k')
     ax.set_xlim(xx.min(), xx.max())
     ax.set_ylim(yy.min(), yy.max())
-    ax.set_xlabel('Different')
-    ax.set_ylabel('Point')
+    ax.set_xlabel('Word length')
+    ax.set_ylabel('Message point')
     ax.set_xticks(())
     ax.set_yticks(())
     ax.set_title(title)
@@ -118,11 +137,9 @@ for clf, title, ax, y_each in zip(models, titles, sub.flatten(), y):
 file_name = 'SVM_OvR_img.jpg'
 plt.savefig(cfg.get_image_path() + file_name)
 
-with open(cwd + 'info', 'r') as info:
-    tmp = json.load(info)
+svmJson = [{'SVM':[{'test_accuracy':accuracy}, {'train_accuracy':train_accuracy}]}]
 
-svmJson = [{'SVM':[{'expected':predicted}, {'actual':test_target}, {'accuracy':accuracy}]}]
-tmp.append(svmJson)
+with open(cwd + 'svminfo', 'w') as info:
+    json.dump(svmJson, info)
 
-with open(cwd + 'info', 'w') as info:
-    json.dump(tmp, info)
+    
