@@ -39,6 +39,17 @@ def normalize_data(data):
 
 
 train_data = preprocessing.scale(train_data)
+
+normalize_file = open(cwd + 'normalize_info', 'w')
+i = 0
+for item in train_data:
+    tmp = []
+    tmp.append(item)
+    tmp.append(train_target[i])
+    normalize_file.write('{}\n'.format(tmp))
+    i += 1
+normalize_file.close()
+
 # Test data
 train_amount = 75
 test_data = train_data[train_amount:].copy()
