@@ -1,7 +1,7 @@
 import os
 
 def get_path():
-    return os.getcwd() + '/resources/data/'
+    return os.getcwd() + '/data/'
 
 def get_image_path():
-    return os.getcwd() + '/resources/images/'
+    return os.getcwd() + '/images/'
