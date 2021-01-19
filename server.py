@@ -34,4 +34,5 @@ def go_compute():
 		return None
 
 if __name__ == '__main__':
+	# to run this python server.py <IP>
 	app.run(sys.argv[1], '5010')

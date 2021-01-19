@@ -9,7 +9,7 @@ cwd = cfg.get_path()
 # Find amount bad and good word
 def find_word(message):
     words = []
-    with open(cwd + 'words', 'r') as words_file:
+    with open(cwd + 'words', 'r', encoding="utf8") as words_file:
         for word in words_file:
             word = word.replace('\n', '')
             word = word.replace('\ufeff', '')
@@ -18,7 +18,7 @@ def find_word(message):
     words.sort(key = lambda s : len(s[0]), reverse=True)
 
     max_sentense = 1
-    with open(cwd + 'max_sentense', 'r') as max_sentense_file:
+    with open(cwd + 'max_sentense', 'r', encoding="utf8") as max_sentense_file:
         for max_st in max_sentense_file:
             max_sentense = float(max_st)
 
@@ -74,6 +74,6 @@ def predict(network, row):
 # Load Weights
 def load_weights():
     network = []
-    with open(cwd + 'weights', 'r') as weights:
+    with open(cwd + 'weights', 'r', encoding="utf8") as weights:
         network = json.load(weights)
     return network
